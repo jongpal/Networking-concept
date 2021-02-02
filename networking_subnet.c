@@ -165,11 +165,18 @@ int check_ip_subnet_membership(char *network_id, char mask, char *check_ip){
   else return -1; // negative
 };
 
-int main(void) {
+int main(int argc, char **argv) {
+  //argv[1] : ip address (ex)"192.168.2.10") 
+  //argv[2] : mask
+  if(argc != 3){
+    fprintf(stderr, "Usage: %s processes\n", argv[0]);
+    return 1;
+  }
+
   char ipadd_buffer[PREFIX_LEN];
   memset(ipadd_buffer, 0, PREFIX_LEN);
-  char *ip_add = "192.168.2.10";
-  char mask = 24;
+  char *ip_add = argv[1];
+  char mask = atoi(argv[2]);
 
   //1
   get_broadcast_address(ip_add, mask, ipadd_buffer);
