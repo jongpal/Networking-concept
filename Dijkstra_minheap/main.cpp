@@ -75,13 +75,22 @@ void dijkstra(std::vector<Node> &heap, int s, int V){
     if(check[(*it).get_val()]) continue;
     //if it is yet to visited
     int d = cost[s] + (*it).get_weight();
-    if( d <= cost[(*it).get_val()]) {
+    if( d < cost[(*it).get_val()]) {
         cost[(*it).get_val()] = d;
         Node update((*it).get_val(), d);
         func.upheap(update, heap);
-        parent[(*it).get_val()].push_back(s);
-    } 
- }
+        if(parents[(*it).get_val()].size() >=1) parents[(*it).get_val()].back() = s;
+        else parents[(*it).get_val()].push_back(s);
+	}
+    //ECMP : if d is same , then append
+    else if(d == cost[(*it).get_val()]) {
+      std::cout << " in==cost :" << d; 
+        cost[(*it).get_val()] = d;
+        Node update((*it).get_val(), d);
+        func.upheap(update, heap);
+        parents[(*it).get_val()].push_back(s);
+    }
+}
   //check heap is empty (size 1) 
   if(heap.size() <= 1) return;
   Node min = func.extract_min(heap);
@@ -122,6 +131,7 @@ void set_nexthop(int s, int V){
 
 int main() {
   int V,E;
+  int src_node = 0;
   std::vector <Node> heap;
   //heap init (dummy heap[0])
   Node empty(30,10000);
@@ -134,9 +144,11 @@ int main() {
 
   adjGraph(&V, &E);
   printGraph(V);
-  cost_init(0, V);
-  dijkstra(heap, 0, V);
-  set_nexthop(0, V);
+  cost_init(src_node, V);
+  dijkstra(heap, src_node, V);
+  set_nexthop(src_node, V);
+
+  std::cout << "from Source Node: "<< src_node << '\n';
 
   for(int i = 0 ; i < V; i++){
     std::cout <<"\n if you want to go : " << int2name(i) <<", next hop : ";
