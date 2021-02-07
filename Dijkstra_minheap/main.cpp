@@ -9,7 +9,7 @@ std::vector<Node> *head;
 int *cost;
 int *next_hop; //next hop info
 std::vector<int> check; //to check if visited
-std::vector<int> parent;
+std::vector<int> *parent;
 Heap_funcs func;
 
 int name2int(char c)
@@ -28,6 +28,7 @@ void adjGraph(int* V, int* E){
   head = new std::vector<Node>[*V];
   cost = new int[*V];
   next_hop = new int[*V];
+  parents = new std::vector<int>[*V];
 
   //init : set check to 0
   for(int i = 0 ; i < *V; i++) {
@@ -62,7 +63,7 @@ void cost_init(int s, int V) {
   for(int i = 0 ; i < V; i++) {
     if(i == s) cost[i] = 0;
     else cost[i] = 1000;
-    parent.push_back(-1);
+    // parent.push_back(-1);
   }
 }
 
@@ -74,13 +75,13 @@ void dijkstra(std::vector<Node> &heap, int s, int V){
     if(check[(*it).get_val()]) continue;
     //if it is yet to visited
     int d = cost[s] + (*it).get_weight();
-    if( d < cost[(*it).get_val()]) {
+    if( d <= cost[(*it).get_val()]) {
         cost[(*it).get_val()] = d;
         Node update((*it).get_val(), d);
         func.upheap(update, heap);
-        parent[(*it).get_val()] = s;
+        parent[(*it).get_val()].push_back(s);
     } 
-  }
+ }
   //check heap is empty (size 1) 
   if(heap.size() <= 1) return;
   Node min = func.extract_min(heap);
@@ -90,15 +91,32 @@ void dijkstra(std::vector<Node> &heap, int s, int V){
 void set_nexthop(int s, int V){
   int j;
   for(int i = 0 ; i < V; i++) {
-    if((i == s) || (parent[i] == s)) {
-      next_hop[i] = i;
-      continue;
+    if(parent[i].size() == 1){
+      if((i == s) || (parent[i][0] == s)) {
+        next_hop[i].push_back(i);
+        continue;
+      }
+      j = i;
+      while(parent[j].back() != s) {
+        j = parent[j].back();
+      }
+      next_hop[i].push_back(j);
+    } 
+    //for ECMP
+     else if(parent[i].size() >= 2) {
+      std::vector <int>:: iterator it;
+      for(it = parent[i].begin(); it != parent[i].end(); it++){
+        j = *it;
+        while(parent[j].back() != s) {
+          j = parent[j].back();
+        }
+        next_hop[i].push_back(j);
+      }
+    } 
+    //source node
+    else {
+      next_hop[i].push_back(i);
     }
-    j = i;
-    while(parent[j] != s) {
-      j = parent[j];
-    }
-    next_hop[i] = j;
   }
 }
 
@@ -121,10 +139,14 @@ int main() {
   set_nexthop(0, V);
 
   for(int i = 0 ; i < V; i++){
-    std::cout <<"\n if you want to go : " << int2name(i) <<", next hop : "<< int2name(next_hop[i]) << ", cost : " << cost[i] << '\n';
+    std::cout <<"\n if you want to go : " << int2name(i) <<", next hop : ";
+    for(it = next_hop[i].begin(); it != next_hop[i].end(); it++){
+      std::cout << int2name(*it) << ",";
+    }
+    std::cout << " cost :" << cost[i] <<'\n';
   }
-   
 
+  delete [] parent;
   delete [] head;
   delete [] cost;
   delete [] next_hop;
