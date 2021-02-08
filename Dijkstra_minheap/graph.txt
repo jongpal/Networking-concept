@@ -1,8 +1,9 @@
-11 17
-AB 4 AC 1 AD 2 AE 3 CD 2 DF 4 EF 4 BF 4
-DG 4 GH 3 HI 2 GI 3 GJ 4 IJ 2 JK 1 FJ 2 FK 4
-
-
+6 8
+AB 3 a-eth0 b-eth0 AC 4 a-eth1 c-eth0 
+BC 5 b-eth1 c-eth1 BD 4 b-eth2 d-eth0
+CE 6 c-eth2 e-eth0
+DE 10 d-eth1 e-eth1 DF 6 d-eth2 f-eth0
+EF 3 e-eth2 f-eth1
 
 
 
