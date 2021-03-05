@@ -4,13 +4,21 @@ int Node:: get_val() {
     return val;
 }
 
- int Node:: get_weight() {
+int Node:: get_weight() {
     return weight;
 }
 
+// void Node:: set_oif(std::string oif){
+//   this->oif = oif;
+// }
+
+std::string Node:: get_oif() {
+  return oif;
+}
 Node& Node::operator=(const Node& c){
   val = c.val;
   weight = c.weight;
+  oif = c.oif;
   return *this;
 }
 
