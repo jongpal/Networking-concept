@@ -25,11 +25,12 @@
   making conceptual ring shaped distributed memory:
   different node share their own memory by networking 
   client will not know about what's going on behind the scene
-  2GB memory * (3 Node) => client would think that he has total of 6GB memory
-  - each node knows their successive node's udp address
-  - each node has their own memory (implemented by hash table( using double hashing))
+  2GB memory * (3 Node) => client would think that he/she has total 6GB of memory
+  - each node communicates with their successive node by UDP protocol
+  - each node has their own memory (implemented by hash table(double hashing used here))
   - each node will check whether that key belongs to local memory and if not, it will forward the packet to successive node by UDP
-  - if that successive node checks the key again and if it matches, it will request PUT_REPLY message to the original node that received PUT command from client  - this data transmission would use TCP, so inside of packet needs
+  - if that successive node checks the key again and if it matches, it will request PUT_REPLY message to the original node that received PUT command from client 
+  - this data transmission would use TCP, so inside of packet needs
     appl_layer_message structure which is defined below
   
 */
